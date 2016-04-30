@@ -33,7 +33,7 @@ Plese pay attension for `extensions` word in the package name. Neo4j configurati
 
 * Adding new user:
 
-curl --data "password={password}" --user neo4j:{neo4j.password} http://localhost:7474/unmanaged/auth/adduser/{user}
+curl --data "password={password}" --user neo4j:{neo4j.password} http://localhost:7474/unmanaged/auth/add/{user}
 
 * Deleting user:
 
