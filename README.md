@@ -18,12 +18,24 @@ cp neo4j-auth/target/neo4j-auth-1.0.0.jar /path/to/neo4j/plugins/
 vi /path/to/neo4j/conf/neo4j-server.properties
 ```
 
-* Add or uncomment folowing line:
+* Add folowing line:
 
 ```
 org.neo4j.server.thirdparty_jaxrs_classes=org.neo4j.extensions.server.unmanaged=/unmanaged
 ```
-(note double equals sing used in the property line)
 
+Plese pay attension for `extensions` word in the package name. Neo4j configuration file usually include sample line for such configration, but it will have different package name and server will not work.
+
+ 
 * Start or restart neo4j 
 
+## Ussage
+
+* Adding new user:
+
+curl --data "password={password}" --user neo4j:{neo4j.password} http://localhost:7474/unmanaged/auth/adduser/{user}
+
+* Deleting user:
+
+curl --user neo4j:{neo4j.password} http://localhost:7474/unmanaged/auth/delete/{user}
+ 
