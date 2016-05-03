@@ -29,13 +29,13 @@ Plese pay attension for `extensions` word in the package name. Neo4j configurati
  
 * Start or restart neo4j 
 
-## Ussage
+## Usage
 
-* Adding new user:
+* Adding a new user:
 
 curl --data "password={password}" --user neo4j:{neo4j.password} http://localhost:7474/unmanaged/auth/add/{user}
 
-* Deleting user:
+* Deleting a user:
 
 curl --user neo4j:{neo4j.password} http://localhost:7474/unmanaged/auth/delete/{user}
  
