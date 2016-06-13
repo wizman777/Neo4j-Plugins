@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.rdswitchboard.plugins</groupId>
   <artifactId>neo4j-auth</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
   <name>Neo4j Authentification Plugin</name>
   
   <properties>

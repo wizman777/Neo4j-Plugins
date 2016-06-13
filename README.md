@@ -9,7 +9,7 @@ $ mvn package
 * Copy compiled plugin into Neo4j plugis folder
 
 ```
-cp neo4j-auth/target/neo4j-auth-1.0.0.jar /path/to/neo4j/plugins/
+cp neo4j-auth/target/neo4j-auth-1.1.0.jar /path/to/neo4j/plugins/
 ```
 
 * Edit neo4j configuration file. 
@@ -39,3 +39,12 @@ curl --data "password={password}" --user neo4j:{neo4j.password} http://localhost
 
 curl --user neo4j:{neo4j.password} http://localhost:7474/unmanaged/auth/delete/{user}
  
+## Neo4j Commands
+
+* To disconnect from Neo4j console, execute:
+
+:server disconnect
+
+* To login back with different user, execute:
+
+:server connect
