@@ -36,10 +36,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.neo4j.extensions.server.unmanaged.AuthService;
+import org.neo4j.graphdb.factory.GraphDatabaseSettings;
 import org.neo4j.harness.junit.Neo4jRule;
-import org.neo4j.server.configuration.ServerSettings;
 import org.neo4j.server.rest.domain.JsonHelper;
-import org.neo4j.server.web.ServerInternalSettings;
 import org.neo4j.test.server.HTTP;
 import org.neo4j.test.server.HTTP.RawPayload;
 import org.neo4j.test.server.HTTP.Response;
@@ -64,8 +63,8 @@ public class AuthServiceTest {
 	
 	@Rule
 	public Neo4jRule neo4j = new Neo4jRule()
-		.withConfig( ServerSettings.auth_enabled.name(), Boolean.toString( true ) )
-		.withConfig( ServerInternalSettings.auth_store.name(), AUTH.toString() )
+		.withConfig( GraphDatabaseSettings.auth_enabled.name(), Boolean.toString( true ) )
+		.withConfig( GraphDatabaseSettings.auth_store.name(), AUTH.toString() )
 		.withExtension( "/unmanaged", AuthService.class );
 		
 	private String generateSecret( String username, String password )
@@ -78,7 +77,7 @@ public class AuthServiceTest {
 		return new String( Base64.encode( value ), Charset.forName( "UTF-8" ));
 	}
 	
-	/*
+	
 	private Response getGraphDatabase() {
 		URI serverURI = neo4j.httpURI().resolve( "db/graph/" );
 		
@@ -91,7 +90,7 @@ public class AuthServiceTest {
 	    return HTTP
 	    		.withHeaders( HttpHeaders.AUTHORIZATION, generateSecret( user, password ) )
 	    		.GET( serverURI.toString() ); 
-	}*/
+	}
 	
 	private Response getUser(String user, String password) {
 		URI serverURI = neo4j.httpURI().resolve( String.format( "user/%s", user ) );
@@ -128,7 +127,7 @@ public class AuthServiceTest {
 	    		.GET( serverURI.toString() );
 	}
 				
-	/*
+	
 	@Test
 	public void shouldDenyAccessWithoutPassword() throws Exception
 	{
@@ -141,12 +140,12 @@ public class AuthServiceTest {
 	    JsonNode data = JsonHelper.jsonNode( response.rawContent() );
 	    JsonNode firstError = data.get( "errors" ).get( 0 );
 	    // And code type should be correct
-	    assertThat( firstError.get( "code" ).asText(), equalTo( "Neo.ClientError.Security.AuthorizationFailed" ) );
+	    assertThat( firstError.get( "code" ).asText(), equalTo( "Neo.ClientError.Security.Unauthorized" ) );
 	    // And code message should indicate that there is no header
-	    assertThat( firstError.get( "message" ).asText(), equalTo( "No authorization header supplied." ) );
-	}*/
+	    assertThat( firstError.get( "message" ).asText(), equalTo( "No authentication header supplied." ) );
+	}
 	
-	/*@Test
+	@Test
 	public void shouldAccessNeo4jWithDefaultPassword() throws Exception
 	{
 		// If we connect to the user record with default password
@@ -160,9 +159,8 @@ public class AuthServiceTest {
 	    assertThat( data.get( "username" ).asText(), equalTo( "neo4j" ) );
 	    // And it should require password change
 	    assertThat( data.get( "password_change_required" ).asText(), equalTo( Boolean.toString(true) ) );
-	}*/
+	}
 	
-	/*
 	@Test
 	public void shouldRequirePasswordChange() throws Exception
 	{
@@ -175,12 +173,12 @@ public class AuthServiceTest {
 	    JsonNode data = JsonHelper.jsonNode( response.rawContent() );
 	    JsonNode firstError = data.get( "errors" ).get( 0 );
 	    // And code type should be correct
-	    assertThat( firstError.get( "code" ).asText(), equalTo( "Neo.ClientError.Security.AuthorizationFailed" ) );
+	    assertThat( firstError.get( "code" ).asText(), equalTo( "Neo.ClientError.Security.Forbidden" ) );
 	    // And code message should indicate that there is no header
 	    assertThat( firstError.get( "message" ).asText(), equalTo( "User is required to change their password." ) );
-	}*/
+	}
 		
-	/*@Test
+	@Test
 	public void shouldAccessWithNewPassword() throws Exception
 	{
 		// If we access database with default user and password
@@ -204,7 +202,8 @@ public class AuthServiceTest {
 	    JsonNode data = JsonHelper.jsonNode( response.rawContent() );
 	    assertThat( data.get( "username" ).asText(), equalTo( "neo4j" ) );
 	    assertThat( data.get( "password_change_required" ).asText(), equalTo( Boolean.toString(false) ) );	    
-	}*/
+	}
+	
 		
 	@Test
 	public void shouldCreateAndDeleteUser() throws Exception
@@ -221,7 +220,7 @@ public class AuthServiceTest {
 		// Then it should reply 200
 		assertThat(response.status(), equalTo(200));
 		
-		// If we access database with using new user passsword
+		// If we access database with using new user password
 		response = getUser("neo4j", "secret");
 	    
 	    // Then it should reply 200
@@ -245,9 +244,8 @@ public class AuthServiceTest {
 		// And it should require password change
 		assertThat( data.get( "password_change_required" ).asText(), equalTo( Boolean.toString(true) ) );
 		
-	/*	
 	    // If we attempt to change password for the new user 
-	 	response = changePassword("test", "test123", "neo4j", "secret");
+	 	response = changePassword("test", "test123", "test", "test");
 		
 		// Then it should reply 200
 		assertThat(response.status(), equalTo(200));
@@ -256,7 +254,7 @@ public class AuthServiceTest {
 	    response = getUser("test", "test123");
 	    
 	    // Then it should reply 200
-		assertThat(response.status(), equalTo(200));	*/
+		assertThat(response.status(), equalTo(200));	
 		
 		// If we attempt to delete new user 
 		response = deleteUser("test", "neo4j", "secret");
